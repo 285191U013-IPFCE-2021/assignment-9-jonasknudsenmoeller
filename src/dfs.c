@@ -5,23 +5,60 @@
 #include <stdio.h>		/* scanf, printf */
 #include <stdlib.h>		/* abort */
 #include <stdbool.h>		/* bool, true, false */
-#include "dfs.h"
+#include <assert.h> // assert 
+#include "dfs.h" 
 
 
 void DFT (node * root)
 {
-	// Implement DFS
-	// Hint: You can use print_node, print_tree and/or print_stack.
+   // initialising 
+  stack *topp = NULL;
+  node *temp = NULL;
+
+  topp = push(topp, root); // topp is set to topp of our tree
+
+  
+  while (isEmpty(topp) == false) //while stack is not empty
+  {
+    temp = top(topp); // temporary node-pointer is set to point to current top
+    print_node(temp);
+
+    // pop top of stack and assess left- and right-child and then push them back to stack if they aren't NULL and has not yet been visited.
+    topp = pop(topp);
+    if(temp -> rchild != NULL && temp -> rchild -> visited == false)
+    {
+      topp = push(topp, temp -> rchild);
+      temp -> rchild -> visited = true;
+    }
+
+    if(temp -> lchild != NULL && temp -> lchild -> visited == false)
+    {
+      topp = push(topp, temp -> lchild);
+      temp -> lchild -> visited = true;
+    }
+  }
 }
 
 node *make_node (int num, node * left, node * right)
 {
-	return 0;
+    node *knot = (node*) malloc(sizeof(stack));
+    knot -> num = num;
+    knot -> visited = false;
+    knot -> lchild = left;
+    knot -> rchild = right;
+    return knot;
 }
 
 void free_node (node * p)
 {
-	
+	if (p -> lchild == NULL && p -> rchild == NULL)
+    free (p);
+  else 
+  {
+    free_node (p -> lchild);
+    free_node (p -> rchild);
+    free (p);
+  }
 }
 
 
@@ -58,25 +95,41 @@ void print_tree (node * p, int depth)
 
 stack *push (stack * topp, node * node)
 {
-	return 0;
+  assert(node != NULL); // precondition
+
+  struct stack * temp = (struct stack*)malloc(sizeof(struct stack*));
+  temp -> node = node;
+  temp -> next = topp; //now temp is a the top of the stack
+
+	return temp;
 }
 
 bool isEmpty (stack * topp)
 {
-  return false;
+  if (topp == NULL)
+    return true;
+  else 
+    return false;
 }
 
 node *top (stack * topp)
 {
-	return 0;
+	return topp -> node;
 }
-
-// Utility function to pop topp  
-// element from the stack 
 
 stack *pop (stack * topp)
 {
-	return 0;
+
+  assert(topp != NULL); // precondition
+
+  stack * temp = topp;
+  topp = topp -> next;
+
+  free(temp);
+
+	return topp;
+
+  
 }
 
 void print_stack (stack * topp)
